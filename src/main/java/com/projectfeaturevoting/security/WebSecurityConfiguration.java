@@ -26,11 +26,14 @@ public class WebSecurityConfiguration {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests()
                     .requestMatchers("/").permitAll()
+                    .requestMatchers("/login").permitAll()
                     .anyRequest().hasRole("USER").and()
                 .formLogin()
-                    .loginPage("/login").permitAll().and()
+                    .loginPage("/login").permitAll()
+                    .and()
                 .logout()
-                    .logoutUrl("/logout").permitAll();
+                    .logoutUrl("/logout")
+                    .permitAll();
 
         return http.build();
     }
