@@ -28,7 +28,7 @@ public class WebSecurityConfiguration {
                 .build();
         UserDetails admin = User.builder()
                 .username("admin")
-                .password("{bcrypt}$2a$10$PObAtWL.tuJXNa1YNh602eyulQRJkpD8qs/FQtAof/GtqDqDKoF4y") // secret
+                .password(passwordEncoder().encode("secret")) // secret
                 .roles("ADMIN")
                 .build();
         return new InMemoryUserDetailsManager(user, admin);
@@ -36,12 +36,13 @@ public class WebSecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http
-                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests()
                     .requestMatchers("/").permitAll()
                     .anyRequest().hasRole("USER").and()
                 .formLogin()
-                    .loginPage("/login").permitAll()
+                    .loginPage("/login")
+                    .defaultSuccessUrl("/dashboard")
+                    .permitAll()
                     .and()
                 .logout()
                     .logoutUrl("/logout")
