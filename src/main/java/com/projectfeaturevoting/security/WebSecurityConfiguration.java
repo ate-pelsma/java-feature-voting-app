@@ -2,6 +2,8 @@ package com.projectfeaturevoting.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,20 +17,25 @@ import org.springframework.security.web.SecurityFilterChain;
 public class WebSecurityConfiguration {
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
     public UserDetailsService users() {
         UserDetails user = User.builder()
                 .username("user")
-                .password(passwordEncoder().encode("welcome")) // welcome {bcrypt}$2a$10$AyCXUYa6mJ913D10qkE4turmvtyeM2fn8G.lVB05pUnbxr4sxmyQi
+                .password(getPasswordEncoder().encode("welcome")) // welcome {bcrypt}$2a$10$AyCXUYa6mJ913D10qkE4turmvtyeM2fn8G.lVB05pUnbxr4sxmyQi
                 .roles("USER")
                 .build();
         UserDetails admin = User.builder()
                 .username("admin")
-                .password(passwordEncoder().encode("secret")) // secret
+                .password(getPasswordEncoder().encode("secret")) // secret
                 .roles("ADMIN")
                 .build();
         return new InMemoryUserDetailsManager(user, admin);
