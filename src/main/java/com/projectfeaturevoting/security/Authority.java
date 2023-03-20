@@ -4,6 +4,7 @@ import com.projectfeaturevoting.domain.User;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 
+// THIS BECOMES A TABLE THAT HOLDS THE AUTHORITIES A CERTAIN USER HAS
 @Entity
 public class Authority implements GrantedAuthority {
 
